@@ -347,7 +347,7 @@ export const FacebookImporterModal: React.FC<FacebookImporterModalProps> = ({
         area: postArea,
         date: new Date(postDate).toLocaleDateString(),
         beneficiaries_reached: 120,
-        coordinator: importAuthor.trim() || 'Farouk Jeftha & Task Team',
+        coordinator: importAuthor.trim() || 'Concerned Citizens Task Team',
         images: [...images],
         status: 'Completed',
         partners: ['Nelson Mandela Bay Civil Coalition', 'Community Volunteers'],

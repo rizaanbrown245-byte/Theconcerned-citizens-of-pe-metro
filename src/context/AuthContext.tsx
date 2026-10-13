@@ -26,12 +26,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const saved = localStorage.getItem(MEMBERS_STORAGE_KEY);
       if (saved) {
         const parsed: User[] = JSON.parse(saved);
-        // Ensure Farouk Jeftha and Rizaan Brown exist in members
-        const hasFarouk = parsed.some((u) => u.email.toLowerCase().includes('farouk'));
-        if (!hasFarouk) {
-          parsed.unshift(DEMO_USERS[0]); // Farouk Jeftha
-        }
-        return parsed;
+        const cleaned = parsed.filter(
+          (u) =>
+            !u.email.toLowerCase().includes('farouk') &&
+            !u.email.toLowerCase().includes('daryl') &&
+            !u.email.toLowerCase().includes('jerome') &&
+            !u.email.toLowerCase().includes('abigail') &&
+            !u.email.toLowerCase().includes('keenan') &&
+            !u.name.toLowerCase().includes('farouk')
+        );
+        return cleaned.length > 0 ? cleaned : DEMO_USERS;
       }
       return DEMO_USERS;
     } catch {

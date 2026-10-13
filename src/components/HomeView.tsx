@@ -323,94 +323,101 @@ export const HomeView: React.FC<HomeViewProps> = ({
       </section>
 
       {/* Founder & Movement Leadership Spotlight */}
-      <section className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/30">
-              <Award className="w-3.5 h-3.5 text-amber-400" />
-              <span>Civil Movement Leadership</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-              Meet the Founder & Task Team Leadership
-            </h2>
-            <p className="text-xs text-slate-400">
-              Grassroots community servants standing together for every forgotten family in Nelson Mandela Bay
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => onSelectTab('members')}
-            className="self-start sm:self-auto flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 bg-amber-950/40 hover:bg-amber-950/70 border border-amber-600/40 px-3.5 py-2 rounded-xl transition"
-          >
-            <span>View Full Directory & Register</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        {/* Founder Feature Banner */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/40 border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl">
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-            <div className="shrink-0 relative w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-slate-950 border-2 border-amber-500 shadow-xl shadow-amber-950/60">
-              <img
-                src={settings.founder_image || settings.logo_url || '/logo.jpg'}
-                alt={settings.founder_name || 'Founder'}
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/logo.jpg';
-                }}
-              />
-              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black to-transparent p-1 text-center">
-                <span className="text-[10px] uppercase font-black tracking-wider text-amber-300">
-                  Founder
-                </span>
+      {(Boolean(settings.founder_name?.trim()) || leadership.length > 0) && (
+        <section className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/30">
+                <Award className="w-3.5 h-3.5 text-amber-400" />
+                <span>Civil Movement Leadership</span>
               </div>
-            </div>
-
-            <div className="flex-1 space-y-3 text-center md:text-left">
-              <div>
-                <span className="text-[11px] uppercase font-bold tracking-wider text-amber-400">
-                  {settings.founder_title || 'Founder & Chief Task Team Convener'}
-                </span>
-                <h3 className="text-2xl font-black text-white">
-                  {settings.founder_name || 'Rizaan Brown'}
-                </h3>
-              </div>
-
-              <div className="relative bg-slate-950/80 border-l-4 border-amber-500 rounded-xl p-3.5 text-xs text-slate-200 italic">
-                <p>
-                  "{settings.founder_quote || settings.motto || "Giving Hope To Those Who Don't Have"}"
-                </p>
-              </div>
-
-              <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">
-                {settings.founder_bio ||
-                  'Grassroots civil activist who established the Concerned Citizens of PE Metro to give a strong, unified voice to the forgotten residents of Nelson Mandela Bay.'}
+              <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                Meet the Founder & Task Team Leadership
+              </h2>
+              <p className="text-xs text-slate-400">
+                Grassroots community servants standing together for every forgotten family in Nelson Mandela Bay
               </p>
+            </div>
 
-              <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
-                <button
-                  type="button"
-                  onClick={() => onSelectTab('members')}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-blue-950 transition flex items-center gap-1.5"
-                >
-                  <Users className="w-3.5 h-3.5" />
-                  <span>View All {leadership.length} Officers & Members</span>
-                </button>
-                {settings.founder_email && (
-                  <a
-                    href={`mailto:${settings.founder_email}`}
-                    className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition"
-                  >
-                    Direct Email: {settings.founder_email}
-                  </a>
-                )}
+            <button
+              type="button"
+              onClick={() => onSelectTab('members')}
+              className="self-start sm:self-auto flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 bg-amber-950/40 hover:bg-amber-950/70 border border-amber-600/40 px-3.5 py-2 rounded-xl transition"
+            >
+              <span>View Full Directory & Register</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Founder Feature Banner */}
+          {Boolean(settings.founder_name?.trim()) && (
+            <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/40 border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl">
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+                <div className="shrink-0 relative w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-slate-950 border-2 border-amber-500 shadow-xl shadow-amber-950/60">
+                  <img
+                    src={settings.founder_image || settings.logo_url || '/logo.jpg'}
+                    alt={settings.founder_name || 'Founder'}
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/logo.jpg';
+                    }}
+                  />
+                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black to-transparent p-1 text-center">
+                    <span className="text-[10px] uppercase font-black tracking-wider text-amber-300">
+                      Founder
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex-1 space-y-3 text-center md:text-left">
+                  <div>
+                    <span className="text-[11px] uppercase font-bold tracking-wider text-amber-400">
+                      {settings.founder_title || 'Founder & Chief Task Team Convener'}
+                    </span>
+                    <h3 className="text-2xl font-black text-white">
+                      {settings.founder_name}
+                    </h3>
+                  </div>
+
+                  {settings.founder_quote && (
+                    <div className="relative bg-slate-950/80 border-l-4 border-amber-500 rounded-xl p-3.5 text-xs text-slate-200 italic">
+                      <p>
+                        "{settings.founder_quote}"
+                      </p>
+                    </div>
+                  )}
+
+                  {settings.founder_bio && (
+                    <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">
+                      {settings.founder_bio}
+                    </p>
+                  )}
+
+                  <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
+                    <button
+                      type="button"
+                      onClick={() => onSelectTab('members')}
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-blue-950 transition flex items-center gap-1.5"
+                    >
+                      <Users className="w-3.5 h-3.5" />
+                      <span>View All {leadership.length} Officers & Members</span>
+                    </button>
+                    {settings.founder_email && (
+                      <a
+                        href={`mailto:${settings.founder_email}`}
+                        className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition"
+                      >
+                        Direct Email: {settings.founder_email}
+                      </a>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          )}
+        </section>
+      )}
 
       {/* Recent Issues Logged by Citizens */}
       <section className="space-y-4">

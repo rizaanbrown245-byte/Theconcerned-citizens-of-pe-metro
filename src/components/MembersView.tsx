@@ -60,26 +60,28 @@ export const MembersView: React.FC = () => {
   const [joinRoleInterest, setJoinRoleInterest] = useState('Community Volunteer');
   const [joinJoinedSuccess, setJoinJoinedSuccess] = useState(false);
 
-  // Identify the Founder (either marked is_founder or category === 'founder' or first leader)
-  const founder = leadership.find((l) => l.is_founder || l.category === 'founder') || {
-    id: 'lead-01',
-    name: settings.founder_name || 'Farouk Jeftha',
-    role_title: settings.founder_title || 'Movement Founder & Civil Leader',
-    category: 'founder' as const,
-    bio:
-      settings.founder_bio ||
-      'Visionary founder who established the Concerned Citizens of PE Metro civil movement to champion the rights of forgotten communities across Nelson Mandela Bay.',
-    avatar_url: settings.founder_image || settings.logo_url || '/logo.jpg',
-    phone: settings.founder_phone || settings.emergency_hotline,
-    email: settings.founder_email || settings.contact_email,
-    ward_or_area: 'Nelson Mandela Bay Metropolitan',
-    joined_date: 'Movement Founder (Established 2023)',
-    badges: ['Founder', 'Civil Visionary', 'Grassroots Convener'],
-    is_founder: true,
-  };
+  // Identify the Founder (either marked is_founder or category === 'founder' or configured in settings)
+  const founder: LeadershipMember | null =
+    leadership.find((l) => l.is_founder || l.category === 'founder') ||
+    (settings.founder_name?.trim()
+      ? {
+          id: 'founder-settings',
+          name: settings.founder_name,
+          role_title: settings.founder_title || 'Movement Founder & Civil Leader',
+          category: 'founder' as const,
+          bio: settings.founder_bio || '',
+          avatar_url: settings.founder_image || settings.logo_url || '/logo.jpg',
+          phone: settings.founder_phone || settings.emergency_hotline,
+          email: settings.founder_email || settings.contact_email,
+          ward_or_area: 'Nelson Mandela Bay Metropolitan',
+          joined_date: 'Movement Founder',
+          badges: ['Founder'],
+          is_founder: true,
+        }
+      : null);
 
   // Filter executive leadership excluding the founder for the executive section
-  const executiveTeam = leadership.filter((l) => l.id !== founder.id);
+  const executiveTeam = founder ? leadership.filter((l) => l.id !== founder.id) : leadership;
 
   // Filtered members list combining leadership and general registered members
   const filteredLeaders = executiveTeam.filter((lead) => {
@@ -182,7 +184,7 @@ export const MembersView: React.FC = () => {
         <div className="mt-8 pt-6 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
           <div>
             <span className="block text-slate-400">Founder & Convener</span>
-            <strong className="text-white text-sm">{founder.name}</strong>
+            <strong className="text-white text-sm">{founder ? founder.name : 'Not configured'}</strong>
           </div>
           <div>
             <span className="block text-slate-400">Task Team Leaders</span>
@@ -202,7 +204,8 @@ export const MembersView: React.FC = () => {
       {/* ========================================================================= */}
       {/* 1. FOUNDER SPOTLIGHT CARD */}
       {/* ========================================================================= */}
-      <section className="space-y-4">
+      {founder && (
+        <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
@@ -371,6 +374,7 @@ export const MembersView: React.FC = () => {
           </div>
         </div>
       </section>
+      )}
 
       {/* ========================================================================= */}
       {/* 2. EXECUTIVE TASK TEAM LEADERSHIP GRID */}
@@ -439,7 +443,14 @@ export const MembersView: React.FC = () => {
         </div>
 
         {/* Leadership Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredLeaders.length === 0 ? (
+          <div className="text-center py-12 px-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-slate-400">
+            <Users className="w-10 h-10 mx-auto mb-3 text-slate-600" />
+            <p className="font-semibold text-slate-300">No leadership members listed</p>
+            <p className="text-xs text-slate-500 mt-1">Use the In-App Editor to add executive task team coordinators.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredLeaders.map((leader, index) => (
             <div
               key={`${leader.id}-${index}`}
@@ -505,6 +516,7 @@ export const MembersView: React.FC = () => {
             </div>
           ))}
         </div>
+        )}
       </section>
 
       {/* ========================================================================= */}

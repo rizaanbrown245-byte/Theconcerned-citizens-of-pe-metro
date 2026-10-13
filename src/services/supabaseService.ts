@@ -98,7 +98,13 @@ export async function fetchIssuesFromSupabase(): Promise<CommunityIssue[] | null
       return null;
     }
 
-    return data.map((row: any) => ({
+    const cleanData = data.filter((row: any) => {
+      const ref = String(row.reference_number || '').toUpperCase();
+      const title = String(row.title || '').toUpperCase();
+      return !ref.includes('TEST') && !ref.includes('PING') && !title.includes('TEST') && !title.includes('HEALTH CHECK');
+    });
+
+    return cleanData.map((row: any) => ({
       id: row.id,
       reference_number: row.reference_number,
       title: row.title,
@@ -919,8 +925,8 @@ export async function fetchOrgSettingsFromSupabase(): Promise<OrgSettings | null
       hero_title: data.hero_title || undefined,
       hero_subtitle: data.hero_subtitle || undefined,
       npo_number: data.npo_number || undefined,
-      founder_name: data.founder_name || 'Farouk Jeftha',
-      founder_title: data.founder_title || 'Movement Founder & Civil Leader',
+      founder_name: data.founder_name || undefined,
+      founder_title: data.founder_title || undefined,
       founder_bio: data.founder_bio || undefined,
       founder_image: data.founder_image || undefined,
       founder_quote: data.founder_quote || undefined,

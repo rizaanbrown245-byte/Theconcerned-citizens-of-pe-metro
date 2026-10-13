@@ -227,11 +227,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS);
       if (saved) {
         const parsed: OrgSettings = JSON.parse(saved);
-        if (!parsed.founder_name || parsed.founder_name === 'Rizaan Brown') {
-          parsed.founder_name = 'Farouk Jeftha';
-          parsed.founder_title = 'Movement Founder & Civil Leader';
-          parsed.founder_bio = INITIAL_ORG_SETTINGS.founder_bio;
-          parsed.founder_quote = INITIAL_ORG_SETTINGS.founder_quote;
+        if (parsed.founder_name === 'Farouk Jeftha') {
+          parsed.founder_name = '';
+          parsed.founder_title = '';
+          parsed.founder_bio = '';
+          parsed.founder_quote = '';
+          parsed.founder_image = '';
+          parsed.founder_phone = '';
+          parsed.founder_email = '';
         }
         if (parsed.alert_banner_text && parsed.alert_banner_text.includes('Active Municipal Alert')) {
           parsed.alert_banner_active = false;
@@ -256,6 +259,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const seenNames = new Set<string>();
         parsed = parsed.filter((member) => {
           if (!member.id || !member.name) return false;
+          if (member.name.toLowerCase().includes('farouk')) return false;
           if (seenIds.has(member.id) || seenNames.has(member.name.toLowerCase().trim())) {
             return false;
           }
@@ -287,7 +291,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // 1. Issues
     fetchIssuesFromSupabase()
       .then((remote) => {
-        if (remote && remote.length > 0) {
+        if (remote !== null) {
           setIssues(remote);
         }
       })
@@ -332,7 +336,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // 6. Leadership
     fetchLeadershipFromSupabase()
       .then((remote) => {
-        if (remote && remote.length > 0) {
+        if (remote !== null) {
           setLeadership(remote);
         }
       })
