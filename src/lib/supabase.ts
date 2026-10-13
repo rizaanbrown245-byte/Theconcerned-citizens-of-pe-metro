@@ -31,7 +31,8 @@ const rawSupabaseUrl = (
 );
 
 export const cleanSupabaseUrl = rawSupabaseUrl
-  .replace(/\/rest\/v1\/?$/, '')
+  .trim()
+  .replace(/\/rest\/v1\/?$/i, '')
   .replace(/\/+$/, '');
 
 export const supabasePublishableKey = (

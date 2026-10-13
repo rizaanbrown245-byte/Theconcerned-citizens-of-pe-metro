@@ -9,7 +9,10 @@ export default defineConfig(() => {
     envPrefix: ['VITE_', 'SUPABASE_'],
     define: {
       'process.env.SUPABASE_URL': JSON.stringify(
-        process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://majiuodmywmnfssxzpcf.supabase.co'
+        (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://majiuodmywmnfssxzpcf.supabase.co')
+          .trim()
+          .replace(/\/rest\/v1\/?$/i, '')
+          .replace(/\/+$/, '')
       ),
       'process.env.SUPABASE_ANON_KEY': JSON.stringify(
         process.env.SUPABASE_ANON_KEY ||
@@ -19,7 +22,10 @@ export default defineConfig(() => {
         'sb_publishable_8ZgZ0zS0ra4ejosOC4HIOQ_kdfU7fPU'
       ),
       'process.env.VITE_SUPABASE_URL': JSON.stringify(
-        process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || 'https://majiuodmywmnfssxzpcf.supabase.co'
+        (process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || 'https://majiuodmywmnfssxzpcf.supabase.co')
+          .trim()
+          .replace(/\/rest\/v1\/?$/i, '')
+          .replace(/\/+$/, '')
       ),
       'process.env.VITE_SUPABASE_PUBLISHABLE_KEY': JSON.stringify(
         process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
