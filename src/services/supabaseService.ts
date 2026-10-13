@@ -389,19 +389,38 @@ export async function fetchSafetyNoticesFromSupabase(): Promise<CrimeSafetyNotic
 }
 
 export async function pushSafetyNoticeToSupabase(
-  notice: CrimeSafetyNotice
+  notice: CrimeSafetyNotice | any
 ): Promise<{ success: boolean; id?: string }> {
   if (!isSupabaseConfigured) return { success: false };
   try {
+    const validAlertLevels = ['Info', 'Warning', 'High Alert'];
+    const safeAlertLevel = validAlertLevels.includes(notice.alert_level)
+      ? notice.alert_level
+      : notice.alert_level === 'Critical' || notice.alert_level === 'Emergency'
+      ? 'High Alert'
+      : 'Warning';
+
+    const validCategories = [
+      'burglary',
+      'hijacking-hotspot',
+      'scam-alert',
+      'cable-theft',
+      'patrol-update',
+      'general',
+    ];
+    const safeCategory = validCategories.includes(notice.category)
+      ? notice.category
+      : 'general';
+
     const payload: Record<string, any> = {
-      title: notice.title,
-      description: notice.description,
-      area: notice.area,
-      alert_level: notice.alert_level,
-      category: notice.category,
-      date: notice.date,
-      action_required: notice.action_required || null,
-      contact_person: notice.contact_person || null,
+      title: notice.title || 'Community Safety Notice',
+      description: notice.description || notice.advice || notice.title || 'Community vigilance advisory.',
+      area: notice.area || 'Nelson Mandela Bay',
+      alert_level: safeAlertLevel,
+      category: safeCategory,
+      date: notice.date || new Date().toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' }),
+      action_required: notice.action_required || notice.advice || null,
+      contact_person: notice.contact_person || notice.verified_by || null,
       emergency_numbers: notice.emergency_numbers || ['10111', '041 585 1555'],
     };
 
@@ -500,19 +519,40 @@ export async function fetchCommunityWorkFromSupabase(): Promise<CommunityWorkIte
 }
 
 export async function pushCommunityWorkToSupabase(
-  work: CommunityWorkItem
+  work: CommunityWorkItem | any
 ): Promise<{ success: boolean; id?: string }> {
   if (!isSupabaseConfigured) return { success: false };
   try {
+    const validCategories = [
+      'soup-kitchen',
+      'water-relief',
+      'school-outreach',
+      'cleanup',
+      'elderly-care',
+      'emergency-relief',
+    ];
+    let safeCategory = 'emergency-relief';
+    if (validCategories.includes(work.category)) {
+      safeCategory = work.category;
+    } else if (typeof work.category === 'string') {
+      const lower = work.category.toLowerCase();
+      if (lower.includes('soup') || lower.includes('food') || lower.includes('meal')) safeCategory = 'soup-kitchen';
+      else if (lower.includes('water')) safeCategory = 'water-relief';
+      else if (lower.includes('clean')) safeCategory = 'cleanup';
+      else if (lower.includes('school') || lower.includes('youth')) safeCategory = 'school-outreach';
+      else if (lower.includes('elder')) safeCategory = 'elderly-care';
+      else safeCategory = 'emergency-relief';
+    }
+
     const payload: Record<string, any> = {
-      title: work.title,
-      description: work.description,
-      category: work.category,
-      date: work.date,
-      location: work.location,
-      impact_stat: work.impact_stat,
-      images: work.images || [],
-      organizer: work.organizer || 'Concerned Citizens Task Team',
+      title: work.title || 'Community Relief Initiative',
+      description: work.description || work.title || 'Community initiative by Concerned Citizens Task Team.',
+      category: safeCategory,
+      date: work.date || new Date().toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' }),
+      location: work.location || 'Nelson Mandela Bay',
+      impact_stat: work.impact_stat || `${work.current_metric || 100} Beneficiaries`,
+      images: work.images || (work.image_url ? [work.image_url] : []),
+      organizer: work.organizer || work.lead_coordinator || 'Concerned Citizens Task Team',
       volunteers_count: work.volunteers_count || 0,
     };
 

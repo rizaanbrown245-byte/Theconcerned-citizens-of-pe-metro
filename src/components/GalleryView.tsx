@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
+import { GalleryItem } from '../types';
 import { ImageFolderUploader } from './ImageFolderUploader';
 
 import peSoupKitchenImg from '../assets/images/pe_soup_kitchen_1791777378227.jpg';
